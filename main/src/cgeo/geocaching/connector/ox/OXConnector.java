@@ -3,11 +3,11 @@ package cgeo.geocaching.connector.ox;
 import cgeo.geocaching.Geocache;
 import cgeo.geocaching.ICache;
 import cgeo.geocaching.SearchResult;
-import cgeo.geocaching.settings.Settings;
 import cgeo.geocaching.connector.AbstractConnector;
 import cgeo.geocaching.connector.capability.ISearchByCenter;
 import cgeo.geocaching.connector.capability.ISearchByGeocode;
 import cgeo.geocaching.geopoint.Geopoint;
+import cgeo.geocaching.settings.Settings;
 import cgeo.geocaching.utils.CancellableHandler;
 
 import java.util.Collection;
@@ -59,7 +59,7 @@ public class OXConnector extends AbstractConnector implements ISearchByCenter, I
             return null;
         }
         final SearchResult searchResult = new SearchResult(cache);
-        return searchResult.filterSearchResults(false, false, Settings.getCacheType());
+        return searchResult.filterSearchResults(false, false, Settings.getCacheTypes());
     }
 
     @Override

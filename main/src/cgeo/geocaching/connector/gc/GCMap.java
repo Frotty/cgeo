@@ -1,9 +1,9 @@
 package cgeo.geocaching.connector.gc;
 
+import cgeo.geocaching.CgeoApplication;
 import cgeo.geocaching.DataStore;
 import cgeo.geocaching.Geocache;
 import cgeo.geocaching.SearchResult;
-import cgeo.geocaching.CgeoApplication;
 import cgeo.geocaching.enumerations.CacheSize;
 import cgeo.geocaching.enumerations.CacheType;
 import cgeo.geocaching.enumerations.LiveMapStrategy.Strategy;
@@ -227,7 +227,7 @@ public class GCMap {
                 if (Settings.isExcludeDisabledCaches() && cache.isDisabled()) {
                     exclude = true;
                 }
-                if (!Settings.getCacheType().contains(cache) && cache.getType() != CacheType.UNKNOWN) { // workaround for BM
+                if (!Settings.getCacheTypes().contains(cache.getType()) && cache.getType() != CacheType.UNKNOWN) { // workaround for BM
                     exclude = true;
                 }
                 if (!exclude) {
@@ -315,13 +315,14 @@ public class GCMap {
                     if (Settings.isExcludeMyCaches()) { // works only for PM
                         params.put("hf", "1", "hh", "1"); // hide found, hide hidden
                     }
-                    if (Settings.getCacheType() == CacheType.TRADITIONAL) {
-                        params.put("ect", "9,5,3,6,453,13,1304,137,11,4,8,1858"); // 2 = tradi 3 = multi 8 = mystery
-                    } else if (Settings.getCacheType() == CacheType.MULTI) {
-                        params.put("ect", "9,5,2,6,453,13,1304,137,11,4,8,1858");
-                    } else if (Settings.getCacheType() == CacheType.MYSTERY) {
-                        params.put("ect", "9,5,3,6,453,13,1304,137,11,4,2,1858");
-                    }
+                    //TODO fix
+                    //                    if (Settings.getCacheType() == CacheType.TRADITIONAL) {
+                    //                        params.put("ect", "9,5,3,6,453,13,1304,137,11,4,8,1858"); // 2 = tradi 3 = multi 8 = mystery
+                    //                    } else if (Settings.getCacheType() == CacheType.MULTI) {
+                    //                        params.put("ect", "9,5,2,6,453,13,1304,137,11,4,8,1858");
+                    //                    } else if (Settings.getCacheType() == CacheType.MYSTERY) {
+                    //                        params.put("ect", "9,5,3,6,453,13,1304,137,11,4,2,1858");
+                    //                    }
                     if (tile.getZoomLevel() != 14) {
                         params.put("_", String.valueOf(System.currentTimeMillis()));
                     }
@@ -369,7 +370,7 @@ public class GCMap {
             final Geopoint center = viewport.getCenter();
             if ((lastSearchViewport == null) || !lastSearchViewport.contains(center)) {
                 //FIXME We don't have a RecaptchaReceiver!?
-                SearchResult search = GCParser.searchByCoords(center, Settings.getCacheType(), false, null);
+                SearchResult search = GCMultiParser.searchByCoordsMulti(center, Settings.getCacheTypes(), false, null);
                 if (search != null && !search.isEmpty()) {
                     final Set<String> geocodes = search.getGeocodes();
                     lastSearchViewport = DataStore.getBounds(geocodes);

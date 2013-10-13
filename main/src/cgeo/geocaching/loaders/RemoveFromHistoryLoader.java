@@ -22,7 +22,10 @@ public class RemoveFromHistoryLoader extends AbstractSearchLoader {
     @Override
     public SearchResult runSearch() {
         DataStore.clearVisitDate(selected);
-        return DataStore.getHistoryOfCaches(true, coords != null ? Settings.getCacheType() : CacheType.ALL);
+        if (coords != null) {
+            return DataStore.getHistoryOfCachesMulti(true, Settings.getCacheTypes());
+        }
+        return DataStore.getHistoryOfCaches(true, CacheType.ALL);
     }
 
 }

@@ -6,6 +6,7 @@ import cgeo.geocaching.CgeoApplication;
 import cgeo.geocaching.compatibility.Compatibility;
 import cgeo.geocaching.network.Cookies;
 import cgeo.geocaching.settings.Settings;
+import cgeo.geocaching.utils.Log;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -68,7 +69,9 @@ public abstract class AbstractActivity extends FragmentActivity implements IAbst
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.v(">>>>>>>1.1.1");
         super.onCreate(savedInstanceState);
+        Log.v(">>>>>>>1.1.2");
         initializeCommonFields();
     }
 
@@ -109,12 +112,16 @@ public abstract class AbstractActivity extends FragmentActivity implements IAbst
 
     private void initializeCommonFields() {
         // initialize commonly used members
+        Log.v(">>>>>>>1.1.1.1");
         res = this.getResources();
+        Log.v(">>>>>>>1.1.1.2");
         app = (CgeoApplication) this.getApplication();
-
+        Log.v(">>>>>>>1.1.1.3");
         // only needed in some activities, but implemented in super class nonetheless
         Cookies.restoreCookieStore(Settings.getCookieStore());
+        Log.v(">>>>>>>1.1.1.4");
         ActivityMixin.keepScreenOn(this, keepScreenOn);
+        Log.v(">>>>>>>1.1.1.5");
     }
 
     @Override

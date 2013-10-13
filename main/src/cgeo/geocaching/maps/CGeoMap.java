@@ -19,6 +19,7 @@ import cgeo.geocaching.enumerations.LoadFlags;
 import cgeo.geocaching.enumerations.LoadFlags.RemoveFlag;
 import cgeo.geocaching.enumerations.StatusCode;
 import cgeo.geocaching.enumerations.WaypointType;
+import cgeo.geocaching.filter.CacheTypesFilterList;
 import cgeo.geocaching.geopoint.Geopoint;
 import cgeo.geocaching.geopoint.Viewport;
 import cgeo.geocaching.list.StoredList;
@@ -474,8 +475,8 @@ public class CGeoMap extends AbstractMap implements OnMapDragListener, ViewFacto
 
     private void prepareFilterBar() {
         // show the filter warning bar if the filter is set
-        if (Settings.getCacheType() != CacheType.ALL) {
-            String cacheType = Settings.getCacheType().getL10n();
+        if (!Settings.getCacheTypes().isAll()) {
+            String cacheType = Settings.getCacheTypes().getL10nSequence();
             ((TextView) activity.findViewById(R.id.filter_text)).setText(cacheType);
             activity.findViewById(R.id.filter_bar).setVisibility(View.VISIBLE);
         } else {
@@ -1090,7 +1091,7 @@ public class CGeoMap extends AbstractMap implements OnMapDragListener, ViewFacto
 
                 SearchResult searchResult;
                 if (mapMode == MapMode.LIVE) {
-                    searchResult = isLiveEnabled ? new SearchResult() : new SearchResult(DataStore.loadStoredInViewport(viewport, Settings.getCacheType()));
+                    searchResult = isLiveEnabled ? new SearchResult() : new SearchResult(DataStore.loadStoredInViewportMulti(viewport, Settings.getCacheTypes()));
                 } else {
                     // map started from another activity
                     searchResult = searchIntent != null ? new SearchResult(searchIntent) : new SearchResult();
@@ -1100,7 +1101,7 @@ public class CGeoMap extends AbstractMap implements OnMapDragListener, ViewFacto
                 }
                 // live mode search result
                 if (isLiveEnabled) {
-                    searchResult.addSearchResult(DataStore.loadCachedInViewport(viewport, Settings.getCacheType()));
+                    searchResult.addSearchResult(DataStore.loadCachedInViewportMulti(viewport, Settings.getCacheTypes()));
                 }
 
                 downloaded = true;
@@ -1122,9 +1123,11 @@ public class CGeoMap extends AbstractMap implements OnMapDragListener, ViewFacto
                     if (isLiveEnabled || mapMode == MapMode.LIVE
                             || mapMode == MapMode.COORDS) {
                         //All visible waypoints
-                        CacheType type = Settings.getCacheType();
-                        Set<Waypoint> waypointsInViewport = DataStore.loadWaypoints(viewport, excludeMine, excludeDisabled, type);
-                        waypoints.addAll(waypointsInViewport);
+                        CacheTypesFilterList types = Settings.getCacheTypes();
+                        for (CacheType type : types.getTypes()) {
+                            Set<Waypoint> waypointsInViewport = DataStore.loadWaypoints(viewport, excludeMine, excludeDisabled, type);
+                            waypoints.addAll(waypointsInViewport);
+                        }
                     }
                     else {
                         //All waypoints from the viewed caches

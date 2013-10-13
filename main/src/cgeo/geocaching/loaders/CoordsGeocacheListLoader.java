@@ -1,11 +1,11 @@
 package cgeo.geocaching.loaders;
 
 import cgeo.geocaching.SearchResult;
-import cgeo.geocaching.settings.Settings;
 import cgeo.geocaching.connector.ConnectorFactory;
 import cgeo.geocaching.connector.capability.ISearchByCenter;
-import cgeo.geocaching.connector.gc.GCParser;
+import cgeo.geocaching.connector.gc.GCMultiParser;
 import cgeo.geocaching.geopoint.Geopoint;
+import cgeo.geocaching.settings.Settings;
 
 import android.content.Context;
 
@@ -22,7 +22,7 @@ public class CoordsGeocacheListLoader extends AbstractSearchLoader {
 
         SearchResult search = new SearchResult();
         if (Settings.isGCConnectorActive()) {
-            search = GCParser.searchByCoords(coords, Settings.getCacheType(), Settings.isShowCaptcha(), this);
+            search = GCMultiParser.searchByCoordsMulti(coords, Settings.getCacheTypes(), Settings.isShowCaptcha(), this);
         }
 
         for (ISearchByCenter centerConn : ConnectorFactory.getSearchByCenterConnectors()) {

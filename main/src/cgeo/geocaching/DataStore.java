@@ -1,6 +1,7 @@
 package cgeo.geocaching;
 
 import cgeo.geocaching.connector.IConnector;
+import cgeo.geocaching.connector.gc.GCMultiParser;
 import cgeo.geocaching.connector.gc.Tile;
 import cgeo.geocaching.enumerations.CacheSize;
 import cgeo.geocaching.enumerations.CacheType;
@@ -11,6 +12,7 @@ import cgeo.geocaching.enumerations.LoadFlags.SaveFlag;
 import cgeo.geocaching.enumerations.LogType;
 import cgeo.geocaching.enumerations.WaypointType;
 import cgeo.geocaching.files.LocalStorage;
+import cgeo.geocaching.filter.CacheTypesFilterList;
 import cgeo.geocaching.geopoint.Geopoint;
 import cgeo.geocaching.geopoint.Viewport;
 import cgeo.geocaching.list.AbstractList;
@@ -2166,9 +2168,25 @@ public class DataStore {
         return loadInViewport(false, viewport, cacheType);
     }
 
+    public static SearchResult loadCachedInViewportMulti(final Viewport viewport, final CacheTypesFilterList cacheTypes) {
+        List<SearchResult> results = new LinkedList<SearchResult>();
+        for (CacheType type : cacheTypes.getTypes()) {
+            results.add(loadInViewport(false, viewport, type));
+        }
+        return GCMultiParser.mergeResults(results);
+    }
+
     /** Retrieve stored caches from DB with listId >= 1 */
     public static SearchResult loadStoredInViewport(final Viewport viewport, final CacheType cacheType) {
         return loadInViewport(true, viewport, cacheType);
+    }
+
+    public static SearchResult loadStoredInViewportMulti(final Viewport viewport, final CacheTypesFilterList cacheTypes) {
+        List<SearchResult> results = new LinkedList<SearchResult>();
+        for(CacheType type : cacheTypes.getTypes()) {
+            results.add(loadInViewport(true, viewport, type));
+        }
+        return GCMultiParser.mergeResults(results);
     }
 
     /**
@@ -2976,6 +2994,14 @@ public class DataStore {
         setVisitDate(Arrays.asList(selected), 0);
     }
 
+    public static SearchResult getBatchOfStoredCachesMulti(Geopoint coords, CacheTypesFilterList cacheTypes, int listId) {
+        List<SearchResult> results = new LinkedList<SearchResult>();
+        for (CacheType type : cacheTypes.getTypes()) {
+            results.add(getBatchOfStoredCaches(coords, type, listId));
+        }
+        return GCMultiParser.mergeResults(results);
+    }
+
     public static SearchResult getBatchOfStoredCaches(Geopoint coords, CacheType cacheType, int listId) {
         final Set<String> geocodes = DataStore.loadBatchOfStoredGeocodes(coords, cacheType, listId);
         return new SearchResult(geocodes, DataStore.getAllStoredCachesCount(cacheType, listId));
@@ -2984,6 +3010,14 @@ public class DataStore {
     public static SearchResult getHistoryOfCaches(boolean detailedOnly, CacheType cacheType) {
         final Set<String> geocodes = DataStore.loadBatchOfHistoricGeocodes(detailedOnly, cacheType);
         return new SearchResult(geocodes, DataStore.getAllHistoryCachesCount());
+    }
+
+    public static SearchResult getHistoryOfCachesMulti(boolean detailedOnly, CacheTypesFilterList cacheTypes) {
+        List<SearchResult> results = new LinkedList<SearchResult>();
+        for (CacheType type : cacheTypes.getTypes()) {
+            results.add(getHistoryOfCaches(detailedOnly, type));
+        }
+        return GCMultiParser.mergeResults(results);
     }
 
     public static boolean saveWaypoint(int id, String geocode, Waypoint waypoint) {

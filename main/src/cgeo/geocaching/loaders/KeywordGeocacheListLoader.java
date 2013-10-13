@@ -3,7 +3,7 @@ package cgeo.geocaching.loaders;
 import cgeo.geocaching.SearchResult;
 import cgeo.geocaching.connector.ConnectorFactory;
 import cgeo.geocaching.connector.capability.ISearchByKeyword;
-import cgeo.geocaching.connector.gc.GCParser;
+import cgeo.geocaching.connector.gc.GCMultiParser;
 import cgeo.geocaching.settings.Settings;
 
 import android.content.Context;
@@ -21,7 +21,7 @@ public class KeywordGeocacheListLoader extends AbstractSearchLoader {
     public SearchResult runSearch() {
         SearchResult searchResult = new SearchResult();
         if (Settings.isGCConnectorActive()) {
-            searchResult = GCParser.searchByKeyword(keyword, Settings.getCacheType(), Settings.isShowCaptcha(), this);
+            searchResult = GCMultiParser.searchByKeywordMulti(keyword, Settings.getCacheTypes(), Settings.isShowCaptcha(), this);
         }
 
         for (ISearchByKeyword connector : ConnectorFactory.getSearchByKeywordConnectors()) {

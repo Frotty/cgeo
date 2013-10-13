@@ -8,6 +8,7 @@ import cgeo.geocaching.connector.gc.Login;
 import cgeo.geocaching.enumerations.CacheType;
 import cgeo.geocaching.enumerations.LiveMapStrategy.Strategy;
 import cgeo.geocaching.enumerations.LogType;
+import cgeo.geocaching.filter.CacheTypesFilterList;
 import cgeo.geocaching.geopoint.Geopoint;
 import cgeo.geocaching.list.StoredList;
 import cgeo.geocaching.maps.MapProviderFactory;
@@ -368,6 +369,7 @@ public class Settings {
     }
 
     public static String getCookieStore() {
+        Log.v(">>>>>>>CS 1");
         return getString(R.string.pref_cookiestore, null);
     }
 
@@ -697,8 +699,13 @@ public class Settings {
      * @return The cache type used for filtering or ALL if no filter is active.
      *         Returns never null
      */
-    public static CacheType getCacheType() {
-        return CacheType.getById(getString(R.string.pref_cachetype, CacheType.ALL.id));
+    //    public static CacheType getCacheType() {
+    //        return CacheType.getById(getString(R.string.pref_cachetype, CacheType.ALL.id));
+    //    }
+
+
+    public static CacheTypesFilterList getCacheTypes() {
+        return CacheTypesFilterList.INSTANCE;
     }
 
     /**

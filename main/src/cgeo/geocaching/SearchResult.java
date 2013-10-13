@@ -6,6 +6,7 @@ import cgeo.geocaching.enumerations.LoadFlags;
 import cgeo.geocaching.enumerations.LoadFlags.LoadFlag;
 import cgeo.geocaching.enumerations.LoadFlags.SaveFlag;
 import cgeo.geocaching.enumerations.StatusCode;
+import cgeo.geocaching.filter.CacheTypesFilterList;
 import cgeo.geocaching.gcvote.GCVote;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -194,6 +195,31 @@ public class SearchResult implements Parcelable {
      * @param cacheType
      * @return
      */
+    public SearchResult filterSearchResults(final boolean excludeDisabled, final boolean excludeMine, final CacheTypesFilterList cacheTypes) {
+
+        SearchResult result = new SearchResult(this);
+        result.geocodes.clear();
+        final ArrayList<Geocache> cachesForVote = new ArrayList<Geocache>();
+        final Set<Geocache> caches = DataStore.loadCaches(geocodes, LoadFlags.LOAD_CACHE_OR_DB);
+        int excluded = 0;
+        for (Geocache cache : caches) {
+            // Is there any reason to exclude the cache from the list?
+            final boolean excludeCache = (excludeDisabled && cache.isDisabled()) ||
+                    (excludeMine && (cache.isOwner() || cache.isFound())) ||
+                    (!cacheTypes.contains(cache.getType()));
+            if (excludeCache) {
+                excluded++;
+            } else {
+                result.addAndPutInCache(cache);
+                cachesForVote.add(cache);
+            }
+        }
+        // decrease maximum number of caches by filtered ones
+        result.setTotal(result.getTotal() - excluded);
+        GCVote.loadRatings(cachesForVote);
+        return result;
+    }
+
     public SearchResult filterSearchResults(final boolean excludeDisabled, final boolean excludeMine, final CacheType cacheType) {
 
         SearchResult result = new SearchResult(this);

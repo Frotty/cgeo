@@ -660,9 +660,10 @@ final class OkapiClient {
             valueMap.put("exclude_my_own", "true");
             valueMap.put("found_status", "notfound_only");
         }
-        if (Settings.getCacheType() != CacheType.ALL) {
-            valueMap.put("type", getFilterFromType(Settings.getCacheType()));
-        }
+        //TODO fix
+        //        if (!Settings.getCacheTypes().isAll()) {
+        //            valueMap.put("type", getFilterFromType(Settings.getCacheType()));
+        //        }
     }
 
     private static void addRetrieveParams(final Parameters params, final OCApiConnector connector) {

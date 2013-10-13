@@ -8,7 +8,6 @@ import cgeo.geocaching.apps.cache.navi.NavigationAppFactory;
 import cgeo.geocaching.apps.cachelist.CacheListAppFactory;
 import cgeo.geocaching.connector.gc.SearchHandler;
 import cgeo.geocaching.enumerations.CacheListType;
-import cgeo.geocaching.enumerations.CacheType;
 import cgeo.geocaching.enumerations.LoadFlags;
 import cgeo.geocaching.enumerations.StatusCode;
 import cgeo.geocaching.export.ExportFactory;
@@ -473,7 +472,7 @@ public class CacheListActivity extends AbstractListActivity implements FilteredA
 
         // refresh standard list if it has changed (new caches downloaded)
         if (type == CacheListType.OFFLINE && listId >= StoredList.STANDARD_LIST_ID && search != null) {
-            final SearchResult newSearch = DataStore.getBatchOfStoredCaches(coords, Settings.getCacheType(), listId);
+            final SearchResult newSearch = DataStore.getBatchOfStoredCachesMulti(coords, Settings.getCacheTypes(), listId);
             if (newSearch.getTotal() != search.getTotal()) {
                 refreshCurrentList();
             }
@@ -563,7 +562,7 @@ public class CacheListActivity extends AbstractListActivity implements FilteredA
             }
 
             // make combined list deletion only possible when there are no filters, as that leads to confusion for the hidden caches
-            menu.findItem(R.id.menu_drop_caches_and_list).setVisible(isOffline && !hasSelection && isNonDefaultList && !adapter.isFiltered() && Settings.getCacheType() == CacheType.ALL);
+            menu.findItem(R.id.menu_drop_caches_and_list).setVisible(isOffline && !hasSelection && isNonDefaultList && !adapter.isFiltered() && Settings.getCacheTypes().isAll());
 
             menu.findItem(R.id.menu_drop_list).setVisible(isNonDefaultList);
             menu.findItem(R.id.menu_rename_list).setVisible(isNonDefaultList);
@@ -1495,8 +1494,8 @@ public class CacheListActivity extends AbstractListActivity implements FilteredA
     }
 
     private void prepareFilterBar() {
-        if (Settings.getCacheType() != CacheType.ALL || adapter.isFiltered()) {
-            final StringBuilder output = new StringBuilder(Settings.getCacheType().getL10n());
+        if ((!Settings.getCacheTypes().isAll()) || adapter.isFiltered()) {
+            final StringBuilder output = new StringBuilder(Settings.getCacheTypes().getL10nSequence());
 
             if (adapter.isFiltered()) {
                 output.append(", ").append(adapter.getFilterName());

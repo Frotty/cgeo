@@ -1,8 +1,8 @@
 package cgeo.geocaching.loaders;
 
 import cgeo.geocaching.SearchResult;
+import cgeo.geocaching.connector.gc.GCMultiParser;
 import cgeo.geocaching.settings.Settings;
-import cgeo.geocaching.connector.gc.GCParser;
 
 import android.content.Context;
 
@@ -17,7 +17,7 @@ public class AddressGeocacheListLoader extends AbstractSearchLoader {
 
     @Override
     public SearchResult runSearch() {
-        return GCParser.searchByAddress(address, Settings.getCacheType(), Settings.isShowCaptcha(), this);
+        return GCMultiParser.searchByAddressMulti(address, Settings.getCacheTypes(), Settings.isShowCaptcha(), this);
     }
 
 }

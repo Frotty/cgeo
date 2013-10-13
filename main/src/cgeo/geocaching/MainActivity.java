@@ -201,17 +201,20 @@ public class MainActivity extends AbstractActivity {
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+        Log.v(">>>>>>>1");
         // don't call the super implementation with the layout argument, as that would set the wrong theme
         super.onCreate(savedInstanceState);
+        Log.v(">>>>>>>1.1");
         setContentView(R.layout.main_activity);
+        Log.v(">>>>>>>1.2");
         Views.inject(this);
-
+        Log.v(">>>>>>>2");
         if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
             // If we had been open already, start from the last used activity.
             finish();
             return;
         }
-
+        Log.v(">>>>>>>3");
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL); // type to search
 
         version = Version.getVersionCode(this);
@@ -327,7 +330,7 @@ public class MainActivity extends AbstractActivity {
     }
 
     private void setFilterTitle() {
-        filterTitle.setText(Settings.getCacheType().getL10n());
+        filterTitle.setText(Settings.getCacheTypes().getL10nSequence());
     }
 
     private void init() {
@@ -417,7 +420,6 @@ public class MainActivity extends AbstractActivity {
 
     protected void selectGlobalTypeFilter() {
         final List<CacheType> cacheTypes = new ArrayList<CacheType>();
-
         //first add the most used types
         cacheTypes.add(CacheType.ALL);
         cacheTypes.add(CacheType.TRADITIONAL);
@@ -438,25 +440,27 @@ public class MainActivity extends AbstractActivity {
         });
 
         cacheTypes.addAll(sorted);
+        cacheTypes.remove(CacheType.ALL);
+        boolean[] checkedItems = Settings.getCacheTypes().convertToArray();
 
-        int checkedItem = cacheTypes.indexOf(Settings.getCacheType());
-        if (checkedItem < 0) {
-            checkedItem = 0;
-        }
-
-        String[] items = new String[cacheTypes.size()];
+        CharSequence[] items = new CharSequence[cacheTypes.size()];
         for (int i = 0; i < cacheTypes.size(); i++) {
             items[i] = cacheTypes.get(i).getL10n();
         }
-
+        android.util.Log.v("FROTTY", checkedItems.length + "   " + items.length);
         Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.menu_filter);
-        builder.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
+        builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+
 
             @Override
-            public void onClick(final DialogInterface dialog, final int position) {
+            public void onClick(final DialogInterface dialog, final int position, final boolean checked) {
                 CacheType cacheType = cacheTypes.get(position);
-                Settings.setCacheType(cacheType);
+                if (Settings.getCacheTypes().contains(cacheType)) {
+                    Settings.getCacheTypes().removeType(cacheType);
+                } else {
+                    Settings.getCacheTypes().addType(cacheType);
+                }
                 setFilterTitle();
                 dialog.dismiss();
             }
