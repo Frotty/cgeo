@@ -53,6 +53,11 @@ public class CacheTypesFilterList {
         return result.substring(0, result.length() - 2);
     }
 
+    /**
+     * Returns a boolean array used for the checkbox widget
+     * 
+     * @return
+     */
     public boolean[] convertToArray() {
         boolean[] result = new boolean[17];
         // Ugly

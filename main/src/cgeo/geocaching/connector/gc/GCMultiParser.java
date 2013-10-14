@@ -9,8 +9,20 @@ import cgeo.geocaching.loaders.RecaptchaReceiver;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * WrapperClass for GCParser to support multiple Cachetypes
+ *
+ * @author Frotty
+ *
+ */
 public class GCMultiParser {
 
+    /**
+     * Merges the Geocodes of the given list of SearchResults
+     * 
+     * @param results
+     * @return
+     */
     public static SearchResult mergeResults(List<SearchResult> results) {
         SearchResult result = new SearchResult();
         for(SearchResult res : results) {
