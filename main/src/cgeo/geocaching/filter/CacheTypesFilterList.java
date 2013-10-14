@@ -1,6 +1,7 @@
 package cgeo.geocaching.filter;
 
 import cgeo.geocaching.enumerations.CacheType;
+import cgeo.geocaching.utils.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +10,7 @@ public class CacheTypesFilterList {
     public static CacheTypesFilterList INSTANCE = new CacheTypesFilterList();
 
     private CacheTypesFilterList() {
+        types.add(CacheType.TRADITIONAL);
     }
 
     List<CacheType> types = new LinkedList<CacheType>();
@@ -38,11 +40,16 @@ public class CacheTypesFilterList {
     }
 
     public final String getL10nSequence() {
+        Log.v(">>>>>>>L10n seq");
         String result = "";
+        if( types.size() < 1 ) {
+            return "";
+        }
         for (CacheType type : types) {
             result += type.getL10n();
             result += ", ";
         }
+
         return result.substring(0, result.length() - 2);
     }
 

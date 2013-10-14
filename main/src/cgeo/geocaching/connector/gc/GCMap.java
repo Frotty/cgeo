@@ -315,7 +315,7 @@ public class GCMap {
                     if (Settings.isExcludeMyCaches()) { // works only for PM
                         params.put("hf", "1", "hh", "1"); // hide found, hide hidden
                     }
-                    //TODO fix
+                    // Not needed anymore
                     //                    if (Settings.getCacheType() == CacheType.TRADITIONAL) {
                     //                        params.put("ect", "9,5,3,6,453,13,1304,137,11,4,8,1858"); // 2 = tradi 3 = multi 8 = mystery
                     //                    } else if (Settings.getCacheType() == CacheType.MULTI) {

@@ -216,11 +216,12 @@ public class MainActivity extends AbstractActivity {
         }
         Log.v(">>>>>>>3");
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL); // type to search
-
+        Log.v(">>>>>>>4");
         version = Version.getVersionCode(this);
         Log.i("Starting " + getPackageName() + ' ' + version + " a.k.a " + Version.getVersionName(this));
-
+        Log.v(">>>>>>>5");
         init();
+        Log.v(">>>>>>>6");
     }
 
     @Override
@@ -334,7 +335,7 @@ public class MainActivity extends AbstractActivity {
     }
 
     private void init() {
-
+        Log.v(">>>>>>>I 1");
         if (app.checkLogin) {
             (new FirstLoginThread()).start();
         }
@@ -342,7 +343,7 @@ public class MainActivity extends AbstractActivity {
         if (initialized) {
             return;
         }
-
+        Log.v(">>>>>>>I 2");
         initialized = true;
 
         Settings.setLanguage(Settings.isUseEnglish());
@@ -354,7 +355,7 @@ public class MainActivity extends AbstractActivity {
                 cgeoFindOnMap(v);
             }
         });
-
+        Log.v(">>>>>>>I 3");
         findByOffline.setClickable(true);
         findByOffline.setOnClickListener(new OnClickListener() {
             @Override
@@ -462,7 +463,6 @@ public class MainActivity extends AbstractActivity {
                     Settings.getCacheTypes().addType(cacheType);
                 }
                 setFilterTitle();
-                dialog.dismiss();
             }
 
         });
